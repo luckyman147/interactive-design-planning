@@ -35,13 +35,13 @@ async function main() {
     console.log(chalk.yellow('Option A: Review & Build'));
     console.log(`  1. Open and review ${chalk.blue(result.planFile)}`);
     console.log(`  2. Copy the master prompt from ${chalk.blue(result.promptFile)}`);
-    console.log(`  3. Paste into https://claude.ai/design`);
-    console.log(`  4. Claude Design generates your website\n`);
+    console.log(`  3. Paste into your favorite LLM or design tool`);
+    console.log(`     (Claude, GPT-4, Gemini, Claude Design, etc.)\n`);
 
     console.log(chalk.yellow('Option B: Customize First'));
     console.log(`  1. Edit the generated files to customize`);
     console.log(`  2. Update colors, fonts, or animation patterns`);
-    console.log(`  3. Then paste updated prompt into Claude Design\n`);
+    console.log(`  3. Then paste updated prompt into any LLM or design tool\n`);
 
     console.log(chalk.gray('💡 Your answers were:'));
     console.log(chalk.gray(`   Website: ${answers.websiteType}`));

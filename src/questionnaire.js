@@ -1,8 +1,3 @@
-/**
- * Interactive Questionnaire Module
- * Asks 6 key questions to understand project requirements
- */
-
 const inquirer = require('inquirer');
 
 async function questionnaire() {
@@ -19,7 +14,16 @@ async function questionnaire() {
         'E-commerce',
         'Web3/Crypto',
         'Luxury/Premium Service',
+        new inquirer.Separator(),
+        { name: '✏️  Enter custom website type', value: 'CUSTOM' },
       ],
+    },
+    {
+      type: 'input',
+      name: 'websiteType',
+      message: 'Enter your website type:',
+      when: (ans) => ans.websiteType === 'CUSTOM',
+      validate: (input) => input.length > 0 || 'Please enter a website type',
     },
     {
       type: 'list',
@@ -32,7 +36,16 @@ async function questionnaire() {
         'Capture leads/sales',
         'Build community',
         'Display information',
+        new inquirer.Separator(),
+        { name: '✏️  Enter custom primary goal', value: 'CUSTOM' },
       ],
+    },
+    {
+      type: 'input',
+      name: 'primaryGoal',
+      message: 'Enter your primary goal:',
+      when: (ans) => ans.primaryGoal === 'CUSTOM',
+      validate: (input) => input.length > 0 || 'Please enter a primary goal',
     },
     {
       type: 'list',
@@ -55,7 +68,16 @@ async function questionnaire() {
           name: 'Maximum Interactive (Cinema-Grade) ⭐ (SVG animations, particles, blur effects)',
           value: 'Maximum Interactive (Cinema-Grade)',
         },
+        new inquirer.Separator(),
+        { name: '✏️  Enter custom animation style', value: 'CUSTOM' },
       ],
+    },
+    {
+      type: 'input',
+      name: 'animationStyle',
+      message: 'Enter your animation style preference:',
+      when: (ans) => ans.animationStyle === 'CUSTOM',
+      validate: (input) => input.length > 0 || 'Please enter an animation style',
     },
     {
       type: 'list',
@@ -67,7 +89,16 @@ async function questionnaire() {
         'Monochromatic Editorial',
         'Colorful & Playful',
         'Luxury Minimal',
+        new inquirer.Separator(),
+        { name: '✏️  Enter custom color aesthetic', value: 'CUSTOM' },
       ],
+    },
+    {
+      type: 'input',
+      name: 'colorAesthetic',
+      message: 'Enter your color aesthetic:',
+      when: (ans) => ans.colorAesthetic === 'CUSTOM',
+      validate: (input) => input.length > 0 || 'Please enter a color aesthetic',
     },
     {
       type: 'list',
@@ -80,7 +111,16 @@ async function questionnaire() {
         'Investors/Stakeholders',
         'Specialists',
         'Community members',
+        new inquirer.Separator(),
+        { name: '✏️  Enter custom target audience', value: 'CUSTOM' },
       ],
+    },
+    {
+      type: 'input',
+      name: 'targetAudience',
+      message: 'Enter your target audience:',
+      when: (ans) => ans.targetAudience === 'CUSTOM',
+      validate: (input) => input.length > 0 || 'Please enter a target audience',
     },
     {
       type: 'list',
@@ -93,7 +133,16 @@ async function questionnaire() {
         'Video/media',
         'Navigation/discovery',
         'Form/capture',
+        new inquirer.Separator(),
+        { name: '✏️  Enter custom key feature', value: 'CUSTOM' },
       ],
+    },
+    {
+      type: 'input',
+      name: 'keyFeature',
+      message: 'Enter your key feature/differentiator:',
+      when: (ans) => ans.keyFeature === 'CUSTOM',
+      validate: (input) => input.length > 0 || 'Please enter a key feature',
     },
   ]);
 

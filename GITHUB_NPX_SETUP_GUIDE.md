@@ -20,27 +20,24 @@ Complete guide to publish the `interactive-design-planning` skill for use across
 - ✅ Continue.dev (VSCode extension)
 - ✅ JetBrains AI (IntelliJ, PyCharm, WebStorm)
 - ✅ OpenRouter (Multi-model API)
-- ✅ OpenAI Codex / GPT-4 (API)
-- ✅ Anthropic Claude API
-- ✅ Stitch (Prompt orchestration)
-- ✅ Antigravity (Prompt versioning)
-- ✅ Any platform with terminal/API access
+- ✅ Cody (Sourcegraph)
+- ✅ Copilot CLI
+- ✅ Direct Node execution
+- ✅ Any platform with terminal/NPM access
 
 ---
 
 ## Overview
 
-After setup, users will run from ANY platform:
+After setup, users will run:
 
 ```bash
 # Start interactive questionnaire (answer 6 questions)
-npx skill create-interactive-website
+npx interactive-design-planning
 
 # Or with agent-specific syntax (where available)
 /create-interactive-website  # Claude Code
-
-# With optional immediate execution (auto-exec with defaults)
-npx skill create-interactive-website --exec
+/skill install interactive-design-planning && /create-interactive-website
 ```
 
 **Questionnaire asks:**
@@ -65,8 +62,8 @@ npx skill create-interactive-website --exec
 ```
 Go to: https://github.com/new
 
-Repository name: create-interactive-website
-Description: "CLI tool to generate production-ready interactive websites with design system integration"
+Repository name: interactive-design-planning
+Description: "Interactive questionnaire → personalized implementation plans for interactive websites"
 Visibility: Public
 Initialize with README: Yes
 .gitignore: Node
@@ -80,150 +77,31 @@ git clone https://github.com/[YOUR-USERNAME]/interactive-design-planning.git
 cd interactive-design-planning
 ```
 
-### 1c. Repository Contents
+### 1c. Repository Structure
 
-Organize your repo with these files:
+Your final repository will contain:
 
 ```
 interactive-design-planning/
 ├── bin/
-│   └── cli.js                      # CLI entry point
+│   └── cli.js                      # CLI entry point (questionnaire + file generation)
 ├── src/
-│   ├── planner.js                  # Main planning logic
-│   ├── extractors/
-│   │   ├── designExtractor.js
-│   │   ├── stackExtractor.js
-│   │   └── roadmapExtractor.js
-│   ├── generators/
-│   │   ├── planGenerator.js
-│   │   ├── examplesGenerator.js
-│   │   └── promptGenerator.js
-│   └── templates/
-│       ├── implementation-plan.md
-│       ├── code-examples.md
-│       └── master-prompt.md
-├── skills/
-│   └── interactive-design-planning.md  # Skill definition
-├── tests/
-│   └── planner.test.js
+│   ├── questionnaire.js            # Interactive 6-question system
+│   └── planner.js                  # Plan + code examples + master prompt generation
 ├── docs/
-│   ├── COMMAND_STRUCTURE.md
-│   ├── AGENT_WORKFLOW.md
-│   ├── AGENT_COMMAND_EXAMPLES.md
-│   ├── EXAMPLE.md
-│   └── IMPLEMENTATION_PLAN_TEMPLATE.md
-├── package.json
-├── README.md
-├── LICENSE
-└── .gitignore
-```
-
----
-
-## Step 1B: Agent Compatibility Setup
-
-Before publishing, configure for multi-agent support:
-
-### Multi-Agent Compatibility
-
-This skill must work across different agent systems:
-
-**Claude Code (Official)**
-- Uses: `/skill` command syntax
-- Format: `/create-interactive-website "description"`
-
-**Copilot CLI**
-- Uses: `skill` tool mapping
-- Format: Same as above, maps to CLI
-
-**Cody (Sourcegraph)**
-- Uses: LLM tool integration
-- Format: Tool callable with JSON input
-
-**Other Agents** (GitHub Copilot, JetBrains, etc.)
-- Use: Master prompt in agent system
-- Format: Custom prompt templates
-
-### Setup for Agent Interoperability
-
-**1. Create agent-specific configs:**
-
-```javascript
-// src/adapters/claude-code.js
-export function adaptForClaudeCode(description) {
-  return {
-    skillName: 'interactive-design-planning',
-    input: { description },
-    output: ['plan', 'examples', 'prompt']
-  };
-}
-
-// src/adapters/copilot-cli.js
-export function adaptForCopilotCLI(description) {
-  return {
-    tool: 'create-interactive-website',
-    args: { description },
-    returns: 'files'
-  };
-}
-
-// src/adapters/cody.js
-export function adaptForCody(description) {
-  return {
-    context: 'design-planning',
-    task: 'create-plan',
-    input: { description }
-  };
-}
-```
-
-**2. Create universal CLI wrapper:**
-
-```javascript
-// bin/cli.js - works with ANY agent
-#!/usr/bin/env node
-
-const { createPlan } = require('../src/planner');
-
-async function main() {
-  const description = process.argv[2];
-  const shouldExecute = process.argv.includes('--exec');
-  
-  const result = await createPlan({
-    description,
-    execute: shouldExecute
-  });
-  
-  console.log('✅ Plan created!');
-  console.log(result);
-}
-
-main().catch(console.error);
-```
-
-**3. Document agent usage:**
-
-Create `AGENT_COMPATIBILITY.md`:
-```markdown
-# Agent Compatibility
-
-This skill supports multiple agents:
-
-## Claude Code
-\`\`\`
-/create-interactive-website "description"
-\`\`\`
-
-## Copilot CLI
-\`\`\`
-create-interactive-website "description"
-\`\`\`
-
-## As Library (any agent)
-\`\`\`javascript
-const { createPlan } = require('interactive-design-planning');
-const plan = await createPlan({ description: "..." });
-\`\`\`
+│   ├── CLAUDE_CODE.md              # Claude Code integration guide
+│   ├── COPILOT_CLI.md              # Copilot CLI installation & usage
+│   ├── CODY.md                     # Sourcegraph Cody (VS Code) integration
+│   ├── COMMAND_REFERENCE.md        # Complete command reference with all options
+│   ├── AGENT_WORKFLOW.md           # Universal workflow for all platforms
+│   ├── EXAMPLE.md                  # 6 test scenarios with expected outputs
+│   └── SETUP_CHECKLIST.md          # Complete setup & publication checklist
+├── package.json                    # NPM package configuration
+├── README.md                       # Main project documentation
+├── QUESTIONNAIRE.md                # Detailed 6-question system documentation
+├── GITHUB_NPX_SETUP_GUIDE.md       # This guide (11 steps to publication)
+├── LICENSE                         # MIT license
+└── .gitignore                      # Git ignore rules
 ```
 
 ---
@@ -265,16 +143,16 @@ npm init -y
     "framer-motion",
     "animation"
   ],
-  "author": "[Your Name] <[your-email]@example.com>",
+  "author": "[Your Name] <billing@fycorps.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/[YOUR-USERNAME]/interactive-design-planning.git"
+    "url": "https://github.com/luckyman147/interactive-design-planning.git"
   },
   "bugs": {
-    "url": "https://github.com/[YOUR-USERNAME]/interactive-design-planning/issues"
+    "url": "https://github.com/luckyman147/interactive-design-planning/issues"
   },
-  "homepage": "https://github.com/[YOUR-USERNAME]/interactive-design-planning#readme",
+  "homepage": "https://github.com/luckyman147/interactive-design-planning#readme",
   "engines": {
     "node": ">=16.0.0"
   },
@@ -300,14 +178,14 @@ npm install
 
 ## Step 3: Create CLI Structure
 
-### 3a. Create bin/cli.js (Entry point with Questionnaire)
+### 3a. Create bin/cli.js (Entry point)
 
 ```bash
 mkdir -p bin
-touch bin/cli.js
 ```
 
-**File: `bin/cli.js`**
+**File: `bin/cli.js`** - The CLI entry point that opens the questionnaire
+
 ```javascript
 #!/usr/bin/env node
 
@@ -379,410 +257,123 @@ chmod +x bin/cli.js
 
 ---
 
-## Step 4: Create Generator Function
+## Step 4: Create Questionnaire Module
 
-### 4a. Create src/generator.js
+### 4a. Create src/questionnaire.js
 
 ```bash
 mkdir -p src
-touch src/generator.js
 ```
 
-**File: `src/generator.js`**
+**File: `src/questionnaire.js`** - The 6-question interactive system
+
 ```javascript
-const fs = require('fs-extra');
-const path = require('path');
-const { generatePackageJson } = require('./templates/package.json.template');
-const { generateTailwindConfig } = require('./templates/tailwind.template');
-const { generateReactApp } = require('./templates/app.template');
-const { generateGlobalStyles } = require('./templates/styles.template');
+const inquirer = require('inquirer');
 
-async function generateWebsite(options) {
-  const {
-    name,
-    aesthetic,
-    colors,
-    fonts,
-    tier,
-    stack,
-    outputPath,
-  } = options;
-
-  // Create project directory structure
-  await fs.ensureDir(outputPath);
-  await fs.ensureDir(path.join(outputPath, 'src'));
-  await fs.ensureDir(path.join(outputPath, 'src/components'));
-  await fs.ensureDir(path.join(outputPath, 'src/hooks'));
-  await fs.ensureDir(path.join(outputPath, 'src/styles'));
-  await fs.ensureDir(path.join(outputPath, 'public'));
-
-  // Generate core files
-  const packageJson = generatePackageJson(name, stack);
-  await fs.writeJSON(path.join(outputPath, 'package.json'), packageJson, { spaces: 2 });
-
-  const tailwindConfig = generateTailwindConfig(colors, fonts);
-  await fs.writeFile(path.join(outputPath, 'tailwind.config.js'), tailwindConfig);
-
-  const appComponent = generateReactApp(aesthetic, tier);
-  await fs.writeFile(path.join(outputPath, 'src/App.tsx'), appComponent);
-
-  const globalStyles = generateGlobalStyles(colors, fonts);
-  await fs.writeFile(path.join(outputPath, 'src/styles/globals.css'), globalStyles);
-
-  // Generate additional files (vite config, tsconfig, etc.)
-  await generateViteConfig(outputPath);
-  await generateTypeScriptConfig(outputPath);
-  await generateReadme(outputPath, name, aesthetic, colors, fonts, tier, stack);
-  await generateGitignore(outputPath);
-
-  return outputPath;
-}
-
-async function generateViteConfig(outputPath) {
-  const config = `import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 5173,
-  },
-})
-`;
-  await fs.writeFile(path.join(outputPath, 'vite.config.ts'), config);
-}
-
-async function generateTypeScriptConfig(outputPath) {
-  const config = {
-    compilerOptions: {
-      target: 'ES2020',
-      useDefineForClassFields: true,
-      lib: ['ES2020', 'DOM', 'DOM.Iterable'],
-      module: 'ESNext',
-      skipLibCheck: true,
-      esModuleInterop: true,
-      allowSyntheticDefaultImports: true,
-      strict: true,
-      resolveJsonModule: true,
-      isolatedModules: true,
-      noEmit: true,
-      jsx: 'react-jsx',
+async function questionnaire() {
+  const answers = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'websiteType',
+      message: 'What type of website are you building?',
+      choices: [
+        'Portfolio/Creative Showcase',
+        'Agency',
+        'SaaS/Product',
+        'Museum/Cultural',
+        'E-commerce',
+        'Web3/Crypto',
+        'Luxury/Premium Service'
+      ]
     },
-    include: ['src'],
-    references: [{ path: './tsconfig.node.json' }],
-  };
-  await fs.writeJSON(path.join(outputPath, 'tsconfig.json'), config, { spaces: 2 });
-}
-
-async function generateReadme(outputPath, name, aesthetic, colors, fonts, tier, stack) {
-  const readme = `# ${name}
-
-${aesthetic.toUpperCase()} | Tier: ${tier.toUpperCase()} | Stack: ${stack}
-
-## Quick Start
-
-\`\`\`bash
-npm install
-npm run dev
-\`\`\`
-
-Visit: http://localhost:5173
-
-## Design System
-
-**Aesthetic:** ${aesthetic}
-**Animation Tier:** ${tier}
-**Colors:** ${colors.join(', ')}
-**Fonts:** ${fonts.join(', ')}
-
-## Project Structure
-
-\`\`\`
-src/
-  components/     # Reusable UI components
-  pages/          # Route pages
-  hooks/          # Custom hooks (animations, scroll, etc.)
-  styles/         # Global styles & design tokens
-  App.tsx         # Main app component
-\`\`\`
-
-## Available Scripts
-
-- \`npm run dev\` - Start development server
-- \`npm run build\` - Build for production
-- \`npm run preview\` - Preview production build
-
-## Performance Targets
-
-- FCP: < 1.5s
-- LCP: < 2.5s
-- CLS: < 0.1
-- Lighthouse: >= 90
-
-## Built with
-
-- React 18+
-- TypeScript
-- Tailwind CSS
-- Framer Motion
-- Vite
-
-## License
-
-MIT
-`;
-  await fs.writeFile(path.join(outputPath, 'README.md'), readme);
-}
-
-async function generateGitignore(outputPath) {
-  const gitignore = `node_modules/
-dist/
-.env
-.env.local
-*.log
-.DS_Store
-`;
-  await fs.writeFile(path.join(outputPath, '.gitignore'), gitignore);
-}
-
-module.exports = { generateWebsite };
-```
-
-### 4b. Create template files (src/templates/)
-
-```bash
-mkdir -p src/templates
-```
-
-**File: `src/templates/package.json.template.js`**
-```javascript
-function generatePackageJson(name, stack) {
-  const basePackage = {
-    name: name.toLowerCase().replace(/\s+/g, '-'),
-    version: '1.0.0',
-    type: 'module',
-    scripts: {
-      dev: 'vite',
-      build: 'tsc && vite build',
-      preview: 'vite preview',
+    {
+      type: 'list',
+      name: 'primaryGoal',
+      message: 'What is your primary goal?',
+      choices: [
+        'Showcase work/portfolio',
+        'Explain product benefits',
+        'Tell a story/narrative',
+        'Capture leads/sales',
+        'Build community',
+        'Display information'
+      ]
     },
-    dependencies: {
-      react: '^18.3.1',
-      'react-dom': '^18.3.1',
-      'framer-motion': '^12.38.0',
-      'lucide-react': '^0.346.0',
+    {
+      type: 'list',
+      name: 'animationStyle',
+      message: 'What animation style do you want?',
+      choices: [
+        'Minimal & Professional (5 days)',
+        'Moderate & Engaging (7 days)',
+        'Heavy 3D & Interactive (9 days)',
+        'Maximum Interactive (Cinema-Grade, 10-12 days)'
+      ]
     },
-    devDependencies: {
-      '@types/react': '^18.3.1',
-      '@types/react-dom': '^18.3.0',
-      '@vitejs/plugin-react': '^4.2.0',
-      typescript: '^5.3.3',
-      vite: '^5.0.7',
-      tailwindcss: '^3.4.1',
-      autoprefixer: '^10.4.16',
-      'postcss': '^8.4.31',
+    {
+      type: 'list',
+      name: 'colorAesthetic',
+      message: 'What color aesthetic?',
+      choices: [
+        'Dark + Vibrant Accents',
+        'Light + Professional',
+        'Monochromatic Editorial',
+        'Colorful & Playful',
+        'Luxury Minimal'
+      ]
     },
-  };
+    {
+      type: 'list',
+      name: 'targetAudience',
+      message: 'Who is your target audience?',
+      choices: [
+        'Creative professionals',
+        'Enterprise/B2B',
+        'Consumers/Public',
+        'Investors/Stakeholders',
+        'Specialists',
+        'Community members'
+      ]
+    },
+    {
+      type: 'list',
+      name: 'keyFeature',
+      message: 'What is your key feature/differentiator?',
+      choices: [
+        'Showcase work',
+        'Explain benefits',
+        'Interactive experience',
+        'Video/media',
+        'Navigation/discovery',
+        'Form/capture'
+      ]
+    }
+  ]);
 
-  if (stack.includes('three')) {
-    basePackage.dependencies['three'] = '^r156';
-  }
-
-  if (stack.includes('nextjs')) {
-    basePackage.dependencies['next'] = '^14.0.0';
-    delete basePackage.dependencies.vite;
-    basePackage.devDependencies.vite = undefined;
-  }
-
-  return basePackage;
+  return answers;
 }
 
-module.exports = { generatePackageJson };
+module.exports = { questionnaire };
 ```
 
 ---
 
-## Step 5: Create README for Project
+## Step 5: Create Plan Generation Module
 
-### 5a. Update main README.md
+### 5a. Create src/planner.js
 
-```bash
-cat > README.md << 'EOF'
-# Interactive Design Planning
+**File: `src/planner.js`** - Generates personalized plans based on questionnaire answers
 
-**Interactive questionnaire → Personalized implementation plans for interactive websites**
+This file contains all the logic to:
+- Generate project names based on website type
+- Create customized implementation plans
+- Generate code examples for the animation tier
+- Create master prompts ready for Claude Design
 
-## What It Does
-
-Instead of generic templates, this tool asks you 6 key questions and generates a fully customized implementation plan based on your specific project.
-
-### The Questionnaire (6 Questions)
-
-1. **Website type** - Portfolio, agency, SaaS, museum, e-commerce, Web3, luxury
-2. **Primary goal** - Showcase work, explain benefits, tell story, capture leads, etc.
-3. **Animation style** - Minimal, moderate, heavy 3D, or cinema-grade ⭐
-4. **Color aesthetic** - Dark+vibrant, light+professional, monochromatic, playful, luxury
-5. **Target audience** - Creatives, enterprises, consumers, investors, specialists, community
-6. **Key feature** - Showcase work, explain benefits, interactive, video, navigation, forms
-
-### Output: 3 Personalized Files
-
-- **Implementation Plan** (customized design system, sections, components)
-- **Code Examples** (patterns for your animation tier)
-- **Master Prompt** (ready to execute in Claude Design)
-
-## Installation & Usage
-
-### Using npx (Recommended)
-
-```bash
-npx interactive-design-planning
-```
-
-Then answer 6 interactive questions, get personalized plan!
-
-### Global Installation
-
-```bash
-npm install -g interactive-design-planning
-
-# Then run from anywhere
-interactive-design-planning
-```
-
-## How It Works
-
-```
-$ npx interactive-design-planning
-
-🎨 Interactive Design Planning
-
-? What type of website?
-  ◯ Portfolio/Creative Showcase
-  ◯ Agency
-  ◯ SaaS/Product
-  [etc.]
-
-? What's your primary goal?
-  ◯ Showcase work/portfolio
-  ◯ Explain product benefits
-  [etc.]
-
-? What animation style appeals to you?
-  ◯ Minimal & Professional
-  ◯ Moderate & Engaging
-  ◯ Heavy 3D & Interactive
-  ◯ Maximum Interactive (Cinema-Grade)
-
-[3 more questions...]
-
-✅ Personalized plan created!
-
-📄 Output Files:
-  1. your-project_IMPLEMENTATION_PLAN.md (customized to your answers)
-  2. your-project_CODE_EXAMPLES.md (patterns for your animation tier)
-  3. your-project_MASTER_PROMPT.md (ready for Claude Design)
-```
-
-## Examples of Personalization
-
-### Example 1: Creative Director (Cinema-Grade)
-
-**Answers:**
-- Type: Portfolio
-- Goal: Showcase work
-- Animation: **Maximum Cinema-Grade** ⭐
-- Colors: Dark + Vibrant
-- Audience: Creative professionals
-- Feature: Showcase work
-
-**Output:**
-- Dark theme (#0C0C0C), magenta accents
-- Sticky-stacking cards, 3D parallax, particles
-- React + Framer Motion + Three.js
-- 10-day timeline
-
-### Example 2: SaaS Landing (Minimal)
-
-**Answers:**
-- Type: SaaS/Product
-- Goal: Explain benefits
-- Animation: **Minimal & Professional**
-- Colors: Light + Professional
-- Audience: Enterprise/B2B
-- Feature: Explain benefits
-
-**Output:**
-- White background, blue accents
-- Feature grid, light animations
-- React + Tailwind CSS
-- 5-day timeline
-
-## What You Get
-
-✅ Personalized implementation plan (not generic)  
-✅ Design system matched to your project  
-✅ Animation patterns for your tier (minimal → cinema-grade)  
-✅ Component checklist (critical/important/optional)  
-✅ 5-tier roadmap (foundation → polish)  
-✅ Master prompt ready for Claude Design  
-✅ Performance targets and accessibility checklist  
-✅ Mobile-first responsive strategy  
-
-## Animation Tiers Explained
-
-- **Minimal & Professional:** Clean fades, subtle hovers (SaaS, corporate)
-- **Moderate & Engaging:** Scroll reveals, parallax, ripple effects (products, brands)
-- **Heavy 3D & Interactive:** Mouse tracking, 3D transforms, sticky cards (portfolios, luxury)
-- **Maximum Cinema-Grade:** Video crossfades, SVG animations, particles, advanced effects (premium studios)
-
-## Architecture
-
-Generated projects include:
-
-```
-src/
-  components/       # Button, Card, Input, Navbar, Hero, etc.
-  pages/           # Home, About, Projects, Contact, etc.
-  hooks/           # useScroll, useInView, animations
-  styles/
-    globals.css    # Design tokens, animations, resets
-  App.tsx
-  main.tsx
-
-public/            # Static assets
-tailwind.config.js # Design system config
-vite.config.ts     # Build config
-tsconfig.json      # TypeScript config
-```
-
-## Performance
-
-Every generated website targets:
-
-- **FCP:** < 1.5s
-- **LCP:** < 2.5s
-- **CLS:** < 0.1
-- **TTI:** < 3.5s
-- **Lighthouse:** >= 90
-
-## Contributing
-
-Contributions welcome! Please open an issue or submit a PR.
-
-## License
-
-MIT
-
-## Support
-
-[GitHub Issues](https://github.com/[YOUR-USERNAME]/create-interactive-website/issues)
-
----
-
-**Made with ❤️ for creative builders**
-EOF
-```
+See the actual implementation in your repository for the complete code. The module exports `createPlan(options)` which:
+- Takes user answers from the questionnaire
+- Returns 3 files: `{planFile, examplesFile, promptFile, projectName}`
+- Customizes everything based on the 6 questions
 
 ---
 
@@ -790,7 +381,7 @@ EOF
 
 ```bash
 git add .
-git commit -m "Initial commit: create-interactive-website CLI tool"
+git commit -m "Initial commit: Interactive design planning skill"
 git push -u origin main
 ```
 
@@ -798,12 +389,9 @@ git push -u origin main
 
 ## Step 7: Publish to NPM
 
-### 7a. Create NPM account (if you don't have one)
+### 7a. Create NPM account
 
-```
-Go to: https://www.npmjs.com/signup
-Create account and verify email
-```
+Go to https://www.npmjs.com/signup and create an account if you don't have one.
 
 ### 7b. Login to NPM
 
@@ -812,358 +400,133 @@ npm login
 # Enter your NPM username, password, and email
 ```
 
-### 7c. Publish
+### 7c. Verify package.json
+
+Make sure:
+- Name is unique (not already taken on NPM)
+- Version is "1.0.0"
+- All fields are filled in correctly
+
+```bash
+npm publish --dry-run
+```
+
+### 7d. Publish
 
 ```bash
 npm publish
 ```
 
-**Expected output:**
-```
-npm notice 📦  create-interactive-website@1.0.0
-npm notice === Tarball Details ===
-npm notice name:          create-interactive-website
-npm notice version:       1.0.0
-npm notice ...
-npm notice published
-```
-
-### 7d. Verify publication
+### 7e. Verify
 
 ```bash
-npm info create-interactive-website
+npm info interactive-design-planning
 ```
 
 ---
 
 ## Step 8: Test the NPX Command
 
-Open a new terminal (outside your project):
-
 ```bash
+# Test locally
 npx interactive-design-planning
-```
 
-**Follow the questionnaire:**
-1. Select "Portfolio/Creative Showcase"
-2. Select "Showcase work"
-3. Select "Maximum Interactive (Cinema-Grade)" (or try another tier!)
-4. Select "Dark + Vibrant Accents"
-5. Select "Creative professionals"
-6. Select "Showcase work"
-
-**You should see:**
-```
-✅ Personalized plan created!
-
-📄 Output Files:
-  1. project_IMPLEMENTATION_PLAN.md
-  2. project_CODE_EXAMPLES.md
-  3. project_MASTER_PROMPT.md
-```
-
-**It should work!** 🎉
-
----
-
-## Updating Your Package
-
-When you make changes:
-
-1. Update version in `package.json` (semantic versioning: major.minor.patch)
-2. Push to GitHub
-3. Publish to NPM:
-
-```bash
-npm publish
+# Answer the 6 questions
+# Files should generate in your current directory
 ```
 
 ---
 
-## Complete File Structure
+## Step 9: Test with Multiple Platforms
 
-```
-create-interactive-website/
-  bin/
-    cli.js
-  src/
-    generator.js
-    templates/
-      package.json.template.js
-      tailwind.template.js
-      app.template.js
-      styles.template.js
-  package.json
-  README.md
-  LICENSE
-  .gitignore
-  .github/
-    workflows/          # Optional: CI/CD
-```
-
----
-
-## Useful Commands
+Test with different platforms:
 
 ```bash
-# Test locally before publishing
-npm link
-
-# Unlink local testing
-npm unlink
-
-# Bump version
-npm version patch      # 1.0.0 → 1.0.1
-npm version minor      # 1.0.0 → 1.1.0
-npm version major      # 1.0.0 → 2.0.0
-
-# View package
-npm info create-interactive-website
-npm view create-interactive-website versions
-
-# Update your local package
-npm update -g create-interactive-website
-```
-
----
-
-## Success! 🚀
-
-Users can now install and use your skill:
-
-```bash
-npx interactive-design-planning
-```
-
-Answer 6 interactive questions:
-- Website type
-- Primary goal
-- Animation style (minimal → cinema-grade)
-- Color aesthetic
-- Target audience
-- Key feature
-
-**Get:** Complete personalized implementation plan + code examples + master prompt!
-
-No more generic templates. Just tailored plans for their specific project.
-
----
-
-## Step 9: Test with Multiple Agents
-
-Before final release, test with all supported agents:
-
-### Test 1: NPX Questionnaire
-
-```bash
-# Test global installation
-npm install -g interactive-design-planning
-
-# Test command opens questionnaire
-interactive-design-planning
-
-# Follow prompts (answer 6 questions)
-# Verify output files created
-ls -la [project-name]_*.md
-
-# Check files contain:
-# - Implementation plan with design system
-# - Code examples
-# - Master prompt for Claude Design
-```
-
-### Test 2: Claude Code
-
-```bash
-# In Claude Code CLI
+# Claude Code (if you have it installed)
 /skill install interactive-design-planning
-
-# Test command opens questionnaire
 /create-interactive-website
 
-# Answer 6 questions interactively
-# Verify: Three files generated
-```
+# Copilot CLI
+npm install -g interactive-design-planning
+create-interactive-website
 
-### Test 3: As Library (Programmatic Use)
-
-```javascript
-// test.js
-const { createPlan } = require('interactive-design-planning');
-
-async function test() {
-  const result = await createPlan({
-    answers: {
-      websiteType: 'Portfolio/Creative Showcase',
-      primaryGoal: 'Showcase work',
-      animationStyle: 'Maximum Interactive (Cinema-Grade)',
-      colorAesthetic: 'Dark + Vibrant Accents',
-      targetAudience: 'Creative professionals',
-      keyFeature: 'Showcase work'
-    },
-    outputDir: './test-output'
-  });
-  
-  console.log('Personalized plan created:', result);
-}
-
-test();
-```
-
-### Test 4: Copilot CLI Compatibility
-
-```bash
-# Ensure bin/cli.js works standalone
+# Direct node
 node bin/cli.js
 
-# Should prompt for questionnaire answers
-# Then output three files
+# NPM link (simulate global install)
+npm link
+create-interactive-website
+npm unlink -g interactive-design-planning
 ```
-
-### Test Verification Checklist
-
-- [ ] NPX installation works globally
-- [ ] Questionnaire displays all 6 questions
-- [ ] Interactive prompts work in Claude Code
-- [ ] Command produces 3 output files
-- [ ] Implementation plan is customized (reflects questionnaire answers)
-- [ ] Code examples match animation tier
-- [ ] Master prompt is executable
-- [ ] Output files are readable
-- [ ] Animation tier affects tech stack
-- [ ] Color aesthetic reflected in design system
-- [ ] All error messages are clear
-- [ ] Help text works (`--help`)
-- [ ] Version flag works (`--version`)
 
 ---
 
 ## Step 10: Create Agent-Specific Documentation
 
-For each agent, create a guide:
-
-**File: `docs/CLAUDE_CODE.md`**
-```markdown
-# Using with Claude Code
-
-## Installation
-\`\`\`bash
-/skill install interactive-design-planning
-\`\`\`
-
-## Usage
-\`\`\`
-/create-interactive-website "Your website description"
-/create-interactive-website "Your website" --exec
-\`\`\`
-
-## Output
-- project_IMPLEMENTATION_PLAN.md
-- project_CODE_EXAMPLES.md
-- project_MASTER_PROMPT.md
-```
-
-**File: `docs/COPILOT_CLI.md`**
-```markdown
-# Using with Copilot CLI
-
-## Installation
-\`\`\`bash
-skill install interactive-design-planning
-\`\`\`
-
-## Usage
-\`\`\`bash
-create-interactive-website "Your website description"
-create-interactive-website "Your website" --exec
-\`\`\`
-
-[Same output as Claude Code]
-```
-
-**File: `docs/CODY.md`**
-```markdown
-# Using with Cody (Sourcegraph)
-
-Add to .vscode/settings.json:
-\`\`\`json
-{
-  "cody.skills": ["interactive-design-planning"]
-}
-\`\`\`
-
-Then use /create-interactive-website in editor...
-```
+Create documentation for each platform in the `docs/` folder:
+- `CLAUDE_CODE.md` - Claude Code users
+- `COPILOT_CLI.md` - Copilot CLI users
+- `CODY.md` - Cody users
+- `COMMAND_REFERENCE.md` - All commands explained
+- `AGENT_WORKFLOW.md` - Universal workflow
+- `EXAMPLE.md` - 6 test scenarios
 
 ---
 
-## Step 11: Create Comprehensive README
+## Step 11: Final Checklist
 
-Update main README.md with:
-- What the skill does (planning, not building)
-- Installation methods (NPX, GitHub clone, manual)
-- Command format (simple, natural language)
-- 5 real examples
-- Prerequisites (ui-ux-pro-max, frontend-design)
-- Output files explanation
-- Multi-agent support
-- Troubleshooting section
-- Performance targets
-- License & credits
+Before declaring the project complete:
 
----
+**Code**
+- [ ] `bin/cli.js` runs without errors
+- [ ] `src/questionnaire.js` asks all 6 questions
+- [ ] `src/planner.js` generates 3 files
+- [ ] Files are generated correctly (not truncated)
+- [ ] Colors, fonts, animations match answers
 
-## Final Checklist Before Publishing
-
+**Documentation**
 - [ ] README.md explains questionnaire approach
-- [ ] All documentation files created
-- [ ] Questionnaire questions finalized (6 questions)
-- [ ] Animation tiers documented (minimal → cinema-grade)
-- [ ] Agent compatibility tested
-- [ ] NPM package.json has correct metadata (includes inquirer)
-- [ ] bin/cli.js shows questionnaire prompts
-- [ ] All dependencies are listed
-- [ ] .gitignore is set up
-- [ ] LICENSE file added (MIT recommended)
-- [ ] GitHub repo is public
-- [ ] All code is committed
-- [ ] NPM publish works
-- [ ] npx command works globally
-- [ ] Questionnaire opens interactively
-- [ ] All 3 output files generate correctly (customized per answers)
-- [ ] Error messages are user-friendly
 - [ ] QUESTIONNAIRE.md documents all 6 questions
+- [ ] Platform-specific guides are complete
+- [ ] Command reference covers all options
+- [ ] EXAMPLE.md has 6 working test scenarios
+
+**Publishing**
+- [ ] package.json has correct metadata
+- [ ] Repository is public on GitHub
+- [ ] NPM package is published
+- [ ] `npx interactive-design-planning` works
+- [ ] Installation instructions are clear
+
+**User Testing**
+- [ ] Tested locally with all 6 answer variations
+- [ ] Tested with Claude Code
+- [ ] Tested with Copilot CLI
+- [ ] Tested with npx command
+- [ ] 3 output files are customized to answers
+- [ ] Master prompt works with Claude Design
 
 ---
 
-## Success! 🚀
+## Summary
 
-Your skill is now published and usable across all agents:
+You now have:
 
-**Claude Code:**
-```bash
-/create-interactive-website
-# Questionnaire opens → answer 6 questions → get personalized plan
-```
+✅ GitHub repository with complete code
+✅ NPM package published globally
+✅ Works across all platforms
+✅ Complete documentation for users
+✅ Ready for users to install and use
 
-**Copilot CLI:**
-```bash
-create-interactive-website
-# Questionnaire opens → answer 6 questions → get personalized plan
-```
-
-**NPX (anyone):**
+**Users can now:**
 ```bash
 npx interactive-design-planning
-# Questionnaire opens → answer 6 questions → get personalized plan
 ```
 
-**As Library:**
-```javascript
-const { createPlan } = require('interactive-design-planning');
-const plan = await createPlan({
-  answers: { websiteType, primaryGoal, animationStyle, ... }
-});
-```
+And get a fully personalized implementation plan in 2 minutes!
 
-**All output:** Three beautiful, personalized documents tailored to their specific project!
+---
+
+**Status:** ✅ Publish-Ready!
+
+For support, open an issue at: https://github.com/luckyman147/interactive-design-planning/issues

@@ -1,0 +1,50 @@
+{
+  "name": "interactive-design-planning",
+  "version": "1.0.0",
+  "description": "Interactive questionnaire → personalized implementation plans for interactive websites. Answer 6 questions, get customized plan + code examples + master prompt.",
+  "main": "src/planner.js",
+  "bin": {
+    "create-interactive-website": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node bin/cli.js"
+  },
+  "keywords": [
+    "cli",
+    "web",
+    "interactive",
+    "website",
+    "questionnaire",
+    "generator",
+    "design-system",
+    "implementation-plan",
+    "react",
+    "tailwind",
+    "framer-motion",
+    "animation",
+    "personalized"
+  ],
+  "author": "Iyed <billing@fycorps.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luckyman147/interactive-design-planning.git"
+  },
+  "bugs": {
+    "url": "https://github.com/luckyman147/interactive-design-planning/issues"
+  },
+  "homepage": "https://github.com/luckyman147/interactive-design-planning#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "inquirer": "^8.2.5",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1",
+    "fs-extra": "^11.1.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  }
+}
